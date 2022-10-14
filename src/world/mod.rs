@@ -23,12 +23,12 @@ impl World {
                     luminosity: 1.0,
                     photons_wavelength: WaveLength::WHITE,
                 },
-                Star {
-                    position: glam::DVec3::new(1.0, -3.0, -7.0),
-                    mass: 1.0,
-                    luminosity: 1.0,
-                    photons_wavelength: WaveLength::WHITE,
-                },
+                // Star {
+                //     position: glam::DVec3::new(1.0, -3.0, -7.0),
+                //     mass: 1.0,
+                //     luminosity: 1.0,
+                //     photons_wavelength: WaveLength::WHITE,
+                // },
             ],
         }
     }

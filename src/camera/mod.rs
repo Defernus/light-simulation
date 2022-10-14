@@ -37,6 +37,6 @@ impl Camera {
             return None;
         }
 
-        return Some(uv);
+        return Some(uv + 0.5);
     }
 }

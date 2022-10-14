@@ -3,8 +3,8 @@ use image::RgbImage;
 use light::{camera::Camera, canvas, world::World};
 
 fn main() {
-    let width: u32 = 256;
-    let height: u32 = 256;
+    let width: u32 = 512;
+    let height: u32 = 512;
 
     let mut world = World::new();
     let camera = Camera {

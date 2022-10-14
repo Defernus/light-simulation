@@ -37,6 +37,13 @@ impl Camera {
             return None;
         }
 
+        let hole_overlap = overlap_position - dir * self.focal_length;
+        let hole_overlap_uv = hole_overlap.xy() / self.sensor_size / 2. / self.hole_width;
+
+        if hole_overlap_uv.x.abs() > 0.5 || hole_overlap_uv.y.abs() > 0.5 {
+            return None;
+        }
+
         return Some(uv + 0.5);
     }
 }

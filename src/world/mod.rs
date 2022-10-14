@@ -18,17 +18,17 @@ impl World {
             photons: LinkedList::new(),
             stars: vec![
                 Star {
-                    position: glam::DVec3::new(0.0, 1.0, -10.0),
+                    position: glam::DVec3::new(10.0, 20.0, -60.0),
                     mass: 1.0,
                     luminosity: 1.0,
                     photons_wavelength: WaveLength::WHITE,
                 },
-                // Star {
-                //     position: glam::DVec3::new(1.0, -3.0, -7.0),
-                //     mass: 1.0,
-                //     luminosity: 1.0,
-                //     photons_wavelength: WaveLength::WHITE,
-                // },
+                Star {
+                    position: glam::DVec3::new(-5.0, -10.0, -30.0),
+                    mass: 1.0,
+                    luminosity: 1.0,
+                    photons_wavelength: WaveLength::WHITE,
+                },
             ],
         }
     }

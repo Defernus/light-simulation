@@ -1,0 +1,17 @@
+[package]
+name = "light"
+version = "0.1.0"
+edition = "2021"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[dependencies]
+glam = "0.21.3"
+lazy_static = "1.4.0"
+envconfig = "0.10.0"
+rand = "0.8.5"
+image = "0.24.4"

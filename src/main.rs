@@ -13,7 +13,7 @@ fn main() {
 
     let mut world = World::new();
     let camera = Camera {
-        hole_radius: 0.05,
+        hole_radius: 0.1,
         focal_length: 1.0,
         sensor_size: DVec2::new(2.0, 2.0),
     };

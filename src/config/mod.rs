@@ -11,11 +11,11 @@ pub struct Config {
     pub out_dir: String,
 
     /// amount of max iterations count
-    #[envconfig(from = "PHOTONS_TTL", default = "30")]
+    #[envconfig(from = "PHOTONS_TTL", default = "20")]
     pub photons_ttl: usize,
 
     /// How fast pixel will fade out after each iteration
-    #[envconfig(from = "FADE_OUT_SPEED", default = "0.99")]
+    #[envconfig(from = "FADE_OUT_SPEED", default = "0.995")]
     pub fade_out_speed: f64,
 }
 

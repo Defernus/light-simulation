@@ -1,9 +1,12 @@
 use crate::{camera::Camera, canvas::Canvas, config::CONFIG, photons::Photon, star::Star};
+use glam::DVec3;
 use rayon::prelude::*;
 use std::{
     collections::LinkedList,
     sync::{Arc, Mutex},
 };
+
+pub mod spawn_galaxy;
 
 pub struct World {
     /// Represent all photons for each frame
@@ -13,18 +16,20 @@ pub struct World {
 
 impl World {
     pub fn new() -> World {
+        let mut stars = vec![];
+
+        spawn_galaxy::spawn_galaxy(
+            &mut stars,
+            DVec3::new(0., 0., -10.),
+            DVec3::Z,
+            10.0,
+            0.1,
+            100,
+        );
+
         World {
             photon_groups: LinkedList::new(),
-            stars: vec![
-                Star {
-                    position: glam::DVec3::new(1.1, 0.0, -3.0),
-                    ..Default::default()
-                },
-                Star {
-                    position: glam::DVec3::new(-3.0, 0.0, -20.0),
-                    ..Default::default()
-                },
-            ],
+            stars,
         }
     }
 

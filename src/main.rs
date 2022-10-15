@@ -1,5 +1,4 @@
 use glam::DVec2;
-use image::RgbImage;
 use light::{camera::Camera, canvas, world::World};
 
 fn main() {
@@ -8,8 +7,8 @@ fn main() {
 
     let mut world = World::new();
     let camera = Camera {
+        hole_radius_2: 0.01,
         focal_length: 1.0,
-        hole_width: 0.1,
         sensor_size: DVec2::new(2.0, 2.0),
     };
     let mut canvas = canvas::Canvas::new(width, height);
@@ -19,6 +18,8 @@ fn main() {
     for i in 0..iters {
         println!("{}/{}", i, iters);
         world.process(camera, &mut canvas);
+
+        canvas.update_fading();
     }
 
     canvas.save("out.png");

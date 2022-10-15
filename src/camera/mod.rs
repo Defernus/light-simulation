@@ -6,8 +6,8 @@ use crate::photons::Photon;
 /// Camera's sensor - is a rectangle, belongs to XY plane faced to -Z direction.
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
-    /// Camera's hole width. Hole have same ratio as sensor. The larger the hole, the more light will pass through, but the less sharp the image will be.
-    pub hole_width: f64,
+    /// pow 2 of Camera's hole radius. The larger the hole, the more light will pass through, but the less sharp the image will be.
+    pub hole_radius_2: f64,
 
     /// distance between camera's sensor and a hole
     pub focal_length: f64,
@@ -38,9 +38,11 @@ impl Camera {
         }
 
         let hole_overlap = overlap_position - dir * self.focal_length;
-        let hole_overlap_uv = hole_overlap.xy() / self.sensor_size / 2. / self.hole_width;
+        let hole_overlap_uv = hole_overlap.xy();
 
-        if hole_overlap_uv.x.abs() > 0.5 || hole_overlap_uv.y.abs() > 0.5 {
+        if hole_overlap_uv.x * hole_overlap_uv.x + hole_overlap_uv.y * hole_overlap_uv.y
+            > self.hole_radius_2
+        {
             return None;
         }
 

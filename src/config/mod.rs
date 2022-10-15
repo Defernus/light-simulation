@@ -9,6 +9,10 @@ pub struct Config {
     /// amount of max iterations count
     #[envconfig(from = "PHOTONS_TTL", default = "128")]
     pub photons_ttl: usize,
+
+    /// How fast pixel will fade out after each iteration
+    #[envconfig(from = "FADE_OUT_SPEED", default = "0.99")]
+    pub fade_out_speed: f64,
 }
 
 lazy_static! {

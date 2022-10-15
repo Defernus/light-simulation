@@ -24,10 +24,12 @@ impl World {
         spawn_galaxy::spawn_galaxy(
             &mut stars,
             DVec3::new(0., 0., -4.),
-            DVec3::new(1.0, 3.0, 2.0),
-            4.0,
-            0.2,
+            // DVec3::new(1.0, 3.0, 2.0),
+            DVec3::Z,
+            0.1,
+            0.01,
             1000,
+            (0.8, 8.0),
         );
 
         World {

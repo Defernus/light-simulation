@@ -14,8 +14,11 @@ pub struct Config {
     #[envconfig(from = "PHOTONS_TTL", default = "10")]
     pub photons_ttl: usize,
 
+    #[envconfig(from = "CAMERA_HOLE_SIZE", default = "0.01")]
+    pub camera_hole_size: f64,
+
     /// How fast pixel will fade out after each iteration
-    #[envconfig(from = "FADE_OUT_SPEED", default = "0.995")]
+    #[envconfig(from = "FADE_OUT_SPEED", default = "0.99")]
     pub fade_out_speed: f64,
 }
 

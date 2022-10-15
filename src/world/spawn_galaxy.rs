@@ -9,6 +9,7 @@ pub fn spawn_galaxy(
     radius: f64,
     thickness: f64,
     size: usize,
+    mass_range: (f64, f64),
 ) {
     let z = top.normalize();
     let x = top.cross(top + DVec3::ONE).normalize();
@@ -28,6 +29,7 @@ pub fn spawn_galaxy(
 
         let star = Star {
             pos: center + position,
+            mass: rand::random::<f64>() * (mass_range.1 - mass_range.0) + mass_range.0,
             ..Default::default()
         };
         stars.push(star);

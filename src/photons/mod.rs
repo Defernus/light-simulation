@@ -44,11 +44,11 @@ impl Photon {
         self.wavelength = wavelength;
     }
 
-    /// Process photon's movement and return if it's life is end.
+    /// Process photon's movement and return if it should be kept
     pub fn process(&mut self) -> bool {
         self.position += self.direction;
         self.ttl -= 1;
 
-        self.ttl == 0
+        self.ttl > 0
     }
 }

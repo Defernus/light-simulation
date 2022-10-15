@@ -3,7 +3,8 @@ use lazy_static::lazy_static;
 
 #[derive(Envconfig)]
 pub struct Config {
-    #[envconfig(from = "PHOTONS_SPAWN_RATE", default = "100000")]
+    /// Defines the number of photons that will be spawned from each star.
+    #[envconfig(from = "PHOTONS_SPAWN_RATE", default = "1000000")]
     pub photons_spawn_rate: usize,
 
     /// amount of max iterations count
@@ -11,7 +12,7 @@ pub struct Config {
     pub photons_ttl: usize,
 
     /// How fast pixel will fade out after each iteration
-    #[envconfig(from = "FADE_OUT_SPEED", default = "0.99")]
+    #[envconfig(from = "FADE_OUT_SPEED", default = "0.999")]
     pub fade_out_speed: f64,
 }
 

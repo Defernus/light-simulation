@@ -1,5 +1,5 @@
 use glam::DVec2;
-use light::{camera::Camera, canvas, world::World};
+use light::{camera::Camera, canvas::Canvas, world::World};
 
 fn main() {
     let width: u32 = 512;
@@ -11,7 +11,7 @@ fn main() {
         focal_length: 1.0,
         sensor_size: DVec2::new(2.0, 2.0),
     };
-    let mut canvas = canvas::Canvas::new(width, height);
+    let mut canvas = Canvas::new(width, height);
 
     let iters = 100;
 

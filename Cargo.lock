@@ -301,6 +301,7 @@ dependencies = [
  "image",
  "lazy_static",
  "rand",
+ "rayon",
 ]
 
 [[package]]

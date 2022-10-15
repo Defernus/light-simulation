@@ -11,6 +11,12 @@ impl WaveLength {
     }
 }
 
+impl Default for WaveLength {
+    fn default() -> Self {
+        WaveLength::WHITE
+    }
+}
+
 impl Into<(f64, f64, f64)> for WaveLength {
     /// wavelength to rgb
     fn into(self) -> (f64, f64, f64) {

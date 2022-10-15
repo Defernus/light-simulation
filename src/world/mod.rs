@@ -18,11 +18,14 @@ impl World {
     pub fn new() -> World {
         let mut stars = vec![];
 
-        // spawn_galaxy::spawn_galaxy(&mut stars, DVec3::new(0., 0., -4.), DVec3::Y, 4.0, 1.0, 10);
-        stars.push(Star {
-            position: DVec3::new(3., 0., -4.),
-            ..Default::default()
-        });
+        spawn_galaxy::spawn_galaxy(
+            &mut stars,
+            DVec3::new(0., 0., -4.),
+            DVec3::new(1.0, 3.0, 2.0),
+            4.0,
+            0.2,
+            1000,
+        );
 
         World {
             photon_groups: LinkedList::new(),

@@ -18,7 +18,7 @@ pub fn spawn_galaxy(
         let angle = i as f64 * 2.0 * std::f64::consts::PI / size as f64;
 
         let r: f64 = rand::random();
-        let r = 1.0 - r * r;
+        // let r = 1.0 - r * r;
         let r = r * radius;
 
         let position = center

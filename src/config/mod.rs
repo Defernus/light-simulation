@@ -7,8 +7,11 @@ pub struct Config {
     #[envconfig(from = "PHOTONS_SPAWN_RATE", default = "1000000")]
     pub photons_spawn_rate: usize,
 
+    #[envconfig(from = "out_dir", default = "out")]
+    pub out_dir: String,
+
     /// amount of max iterations count
-    #[envconfig(from = "PHOTONS_TTL", default = "128")]
+    #[envconfig(from = "PHOTONS_TTL", default = "30")]
     pub photons_ttl: usize,
 
     /// How fast pixel will fade out after each iteration

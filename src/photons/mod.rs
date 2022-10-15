@@ -18,6 +18,12 @@ impl Into<[u8; 3]> for Photon {
     }
 }
 
+impl Into<DVec3> for Photon {
+    fn into(self) -> DVec3 {
+        self.wavelength.into()
+    }
+}
+
 impl Photon {
     pub fn new(wavelength: wavelength::WaveLength, position: DVec3, direction: DVec3) -> Photon {
         Photon {

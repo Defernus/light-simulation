@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use glam::DVec2;
 use image::RgbImage;
 
@@ -28,7 +30,10 @@ impl Canvas {
         self.img.get_pixel(x, y).0
     }
 
-    pub fn save(&self, path: &str) {
+    pub fn save<T>(&self, path: T)
+    where
+        T: AsRef<Path>,
+    {
         self.img.save(path).unwrap();
     }
 

@@ -1,13 +1,17 @@
 use glam::DVec2;
-use light::{camera::Camera, canvas::Canvas, world::World};
+use light::{camera::Camera, canvas::Canvas, config::CONFIG, world::World};
 
 fn main() {
+    dotenv::dotenv().ok();
+
+    std::fs::create_dir_all(&CONFIG.out_dir).unwrap();
+
     let width: u32 = 512;
     let height: u32 = 512;
 
     let mut world = World::new();
     let camera = Camera {
-        hole_radius_2: 0.01,
+        hole_radius_sq: 0.01,
         focal_length: 1.0,
         sensor_size: DVec2::new(2.0, 2.0),
     };
@@ -20,7 +24,11 @@ fn main() {
         world.process(camera, &mut canvas);
 
         canvas.update_fading();
+
+        if i % 10 == 0 {
+            canvas.save(format!("{}/step-{}.png", CONFIG.out_dir, i));
+        }
     }
 
-    canvas.save("out.png");
+    canvas.save(format!("{}/final.png", CONFIG.out_dir));
 }

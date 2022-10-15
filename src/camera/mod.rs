@@ -7,7 +7,7 @@ use crate::photons::Photon;
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
     /// pow 2 of Camera's hole radius. The larger the hole, the more light will pass through, but the less sharp the image will be.
-    pub hole_radius_2: f64,
+    pub hole_radius_sq: f64,
 
     /// distance between camera's sensor and a hole
     pub focal_length: f64,
@@ -17,9 +17,9 @@ pub struct Camera {
 }
 
 impl Camera {
-    /// Return intersection between camera's sensor and a ray segment (if no intersection - return None).
-    /// The segment must belong to a straight line passing through hole (if it is not - return None).
-    pub fn get_intersection(&self, photon: Photon) -> Option<DVec2> {
+    /// Return intersection between camera's sensor and a ray segment (if no intersection - return None) and accuracy (squared distance between center of the hole and hole intersection point).
+    /// The segment must belong to a straight line passing through hole (if it is not - return None).  
+    pub fn get_intersection(&self, photon: Photon) -> Option<(DVec2, f64)> {
         let pos = photon.get_position();
         let dir = photon.get_direction();
 
@@ -40,12 +40,13 @@ impl Camera {
         let hole_overlap = overlap_position - dir * self.focal_length;
         let hole_overlap_uv = hole_overlap.xy();
 
-        if hole_overlap_uv.x * hole_overlap_uv.x + hole_overlap_uv.y * hole_overlap_uv.y
-            > self.hole_radius_2
-        {
+        let dist_sq = (hole_overlap_uv.x * hole_overlap_uv.x
+            + hole_overlap_uv.y * hole_overlap_uv.y)
+            / self.hole_radius_sq;
+        if dist_sq > 1. {
             return None;
         }
 
-        return Some(uv + 0.5);
+        return Some((uv + 0.5, dist_sq));
     }
 }

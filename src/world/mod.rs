@@ -1,4 +1,5 @@
 use crate::{camera::Camera, canvas::Canvas, photons::Photon, star::Star};
+use glam::DVec3;
 use rayon::prelude::*;
 use std::{
     collections::LinkedList,
@@ -18,11 +19,11 @@ impl World {
             photon_threads: vec![LinkedList::new(); THREADS_COUNT],
             stars: vec![
                 Star {
-                    position: glam::DVec3::new(3.0, 2.0, -20.0),
+                    position: glam::DVec3::new(3.0, 0.0, -10.0),
                     ..Default::default()
                 },
                 Star {
-                    position: glam::DVec3::new(-5.0, -1.0, -10.0),
+                    position: glam::DVec3::new(-3.0, 0.0, -10.0),
                     ..Default::default()
                 },
             ],
@@ -40,11 +41,20 @@ impl World {
             let mut new_photons = LinkedList::new();
 
             let canvas = canvas.clone();
-            let mut canvas = canvas.lock().unwrap();
 
             while let Some(mut photon) = photons.pop_back() {
-                if let Some(uv) = camera.get_intersection(photon) {
-                    canvas.set_pixel_by_uv(uv, photon.into());
+                if let Some((uv, factor)) = camera.get_intersection(photon) {
+                    let mut canvas = canvas.lock().unwrap();
+                    let color: DVec3 = photon.into();
+                    let color = color * (1.0 - factor);
+                    canvas.set_pixel_by_uv(
+                        uv,
+                        [
+                            (color.x * 255.0) as u8,
+                            (color.y * 255.0) as u8,
+                            (color.z * 255.0) as u8,
+                        ],
+                    );
                     continue;
                 }
                 if photon.process() {

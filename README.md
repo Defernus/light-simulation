@@ -8,7 +8,7 @@
 - [ ] Mass and gravity.
 - [ ] Black holes.
 - [ ] Use wgpu for calculation.
-- [ ] realtime rendering? (maybe not).
+- [x] realtime rendering.
 
 ## How to run
 ```bash

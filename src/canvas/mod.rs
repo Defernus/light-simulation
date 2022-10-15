@@ -2,17 +2,22 @@ use std::path::Path;
 
 use glam::DVec2;
 use image::{ImageBuffer, LumaA, RgbImage};
+use show_image::{create_window, ImageInfo, ImageView, WindowProxy};
 
 use crate::{config::CONFIG, photons::wavelength::WaveLength};
 
 pub struct Canvas {
     img: ImageBuffer<LumaA<f64>, Vec<f64>>,
+    window: WindowProxy,
 }
 
 impl Canvas {
     pub fn new(width: u32, height: u32) -> Canvas {
+        let window = create_window("image", Default::default()).expect("Window created");
+
         Canvas {
             img: ImageBuffer::new(width, height),
+            window,
         }
     }
 
@@ -28,10 +33,7 @@ impl Canvas {
         self.update_pixel(x, y, wave_length, luminosity);
     }
 
-    pub fn save<T>(&self, path: T)
-    where
-        T: AsRef<Path>,
-    {
+    pub fn generate_rgb(&self) -> RgbImage {
         let mut rgb_img = RgbImage::new(self.img.width(), self.img.height());
 
         for (x, y, pixel) in self.img.enumerate_pixels() {
@@ -39,7 +41,15 @@ impl Canvas {
             let color = (pixel.0[1] * 255.0) as u8;
             rgb_img.put_pixel(x, y, image::Rgb([color, color, color]));
         }
-        rgb_img.save(path).expect("Image saved");
+
+        rgb_img
+    }
+
+    pub fn save<T>(&self, path: T)
+    where
+        T: AsRef<Path>,
+    {
+        self.generate_rgb().save(path).expect("Image saved");
     }
 
     pub fn update_fading(&mut self) {
@@ -49,5 +59,16 @@ impl Canvas {
                 color.0[1] = color[1] as f64 * CONFIG.fade_out_speed;
             }
         }
+    }
+
+    pub fn show(&mut self) {
+        let rgb_data = &self.generate_rgb();
+        let rgb = ImageView::new(
+            ImageInfo::rgb8(self.img.width(), self.img.height()),
+            rgb_data,
+        );
+        self.window
+            .set_image("frame-001", rgb)
+            .expect("image showed");
     }
 }

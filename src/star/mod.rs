@@ -1,11 +1,9 @@
-use std::{collections::LinkedList, f64::consts::PI};
-
-use glam::DVec3;
-
 use crate::{
     config::CONFIG,
     photons::{wavelength::WaveLength, Photon},
 };
+use glam::DVec3;
+use std::f64::consts::PI;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Star {
@@ -19,22 +17,21 @@ pub struct Star {
 }
 
 impl Star {
-    pub fn spawn_photons(&self, photon_threads: &mut Vec<LinkedList<Photon>>) {
-        let spawn_count = (self.luminosity * (CONFIG.photons_spawn_rate as f64)
-            / (photon_threads.len() as f64)) as usize;
+    pub fn get_photons_per_frame(&self) -> usize {
+        (self.luminosity * (CONFIG.photons_spawn_rate as f64)) as usize
+    }
+    pub fn spawn_photons(&self, photons: &mut Vec<Photon>) {
+        let spawn_count = self.get_photons_per_frame();
 
-        for photon_thread in photon_threads {
-            for _ in 0..spawn_count {
-                let theta = (rand::random::<f64>() - 0.5) * 2.0 * PI;
-                let phi = (rand::random::<f64>() - 0.5) * 2.0 * PI;
+        for _ in 0..spawn_count {
+            let theta = (rand::random::<f64>() - 0.5) * 2.0 * PI;
+            let phi = (rand::random::<f64>() - 0.5) * 2.0 * PI;
 
-                let direction =
-                    DVec3::new(theta.cos() * phi.cos(), phi.sin(), theta.sin() * phi.cos());
+            let direction = DVec3::new(theta.cos() * phi.cos(), phi.sin(), theta.sin() * phi.cos());
 
-                let photon = Photon::new(self.photons_wavelength, self.position, direction);
+            let photon = Photon::new(self.photons_wavelength, self.position, direction);
 
-                photon_thread.push_back(photon);
-            }
+            photons.push(photon);
         }
     }
 }

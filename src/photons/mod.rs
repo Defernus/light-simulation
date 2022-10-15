@@ -1,8 +1,5 @@
-use glam::DVec3;
-
-use crate::config::CONFIG;
-
 use self::wavelength::WaveLength;
+use glam::DVec3;
 
 pub mod wavelength;
 
@@ -11,25 +8,6 @@ pub struct Photon {
     wavelength: WaveLength,
     position: DVec3,
     direction: DVec3,
-    ttl: usize,
-}
-
-impl Into<[u8; 3]> for Photon {
-    fn into(self) -> [u8; 3] {
-        self.wavelength.into()
-    }
-}
-
-impl Into<DVec3> for Photon {
-    fn into(self) -> DVec3 {
-        self.wavelength.into()
-    }
-}
-
-impl Into<WaveLength> for Photon {
-    fn into(self) -> WaveLength {
-        self.wavelength
-    }
 }
 
 impl Photon {
@@ -38,7 +16,6 @@ impl Photon {
             wavelength,
             position,
             direction,
-            ttl: CONFIG.photons_ttl,
         }
     }
 
@@ -58,11 +35,7 @@ impl Photon {
         self.wavelength = wavelength;
     }
 
-    /// Process photon's movement and return if it should be kept
-    pub fn process(&mut self) -> bool {
+    pub fn process(&mut self) {
         self.position += self.direction;
-        self.ttl -= 1;
-
-        self.ttl > 0
     }
 }

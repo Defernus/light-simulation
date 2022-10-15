@@ -15,7 +15,7 @@ impl Photon {
         Photon {
             wavelength,
             position,
-            direction,
+            direction: direction.normalize(),
         }
     }
 

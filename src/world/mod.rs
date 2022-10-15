@@ -18,14 +18,11 @@ impl World {
     pub fn new() -> World {
         let mut stars = vec![];
 
-        spawn_galaxy::spawn_galaxy(
-            &mut stars,
-            DVec3::new(0., 0., -10.),
-            DVec3::Z,
-            10.0,
-            0.1,
-            100,
-        );
+        // spawn_galaxy::spawn_galaxy(&mut stars, DVec3::new(0., 0., -4.), DVec3::Y, 4.0, 1.0, 10);
+        stars.push(Star {
+            position: DVec3::new(3., 0., -4.),
+            ..Default::default()
+        });
 
         World {
             photon_groups: LinkedList::new(),
@@ -56,7 +53,7 @@ impl World {
             for photon in photons.iter_mut() {
                 if let Some((uv, factor)) = camera.get_intersection(*photon) {
                     let mut canvas = canvas.lock().unwrap();
-                    canvas.update_pixel_by_uv(uv, photon.get_wavelength(), 1.0 - factor);
+                    canvas.update_pixel_by_uv(1. - uv, photon.get_wavelength(), 1.0 - factor);
                     continue;
                 }
 

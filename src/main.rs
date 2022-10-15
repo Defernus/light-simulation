@@ -13,7 +13,7 @@ fn main() {
 
     let mut world = World::new();
     let camera = Camera {
-        hole_radius: 0.1,
+        hole_radius: 0.01,
         focal_length: 1.0,
         sensor_size: DVec2::new(2.0, 2.0),
     };
@@ -30,7 +30,10 @@ fn main() {
             canvas.save(format!("{}/step-{}.png", CONFIG.out_dir, itt));
         }
 
-        canvas.show();
+        if let Err(e) = canvas.show() {
+            log::error!("Error showing image: {}", e);
+            return;
+        }
 
         log::info!("Iteration {}; Time: {:?}", itt, start_time.elapsed());
         itt += 1;

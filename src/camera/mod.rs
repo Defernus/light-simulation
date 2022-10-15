@@ -1,4 +1,4 @@
-use glam::{DVec2, DVec3, Vec3Swizzles};
+use glam::{DVec2, Vec3Swizzles};
 
 use crate::photons::Photon;
 
@@ -21,25 +21,23 @@ impl Camera {
     /// The segment must belong to a straight line passing through hole (if it is not - return None).  
     pub fn get_intersection(&self, photon: Photon) -> Option<(DVec2, f64)> {
         let pos = photon.get_position();
-        let dir = photon.get_direction();
+        let dir = photon.get_direction().normalize();
 
         if pos.z.is_sign_positive() || (pos.z + dir.z).is_sign_negative() {
             return None;
         }
 
         let factor = -pos.z;
-        let sensor_overlap_position = pos + dir * factor;
+        let sensor_overlap_position = pos + dir / dir.z / self.focal_length * factor;
 
-        let uv = sensor_overlap_position.xy() / self.sensor_size / 2.;
+        let uv = sensor_overlap_position.xy() / self.sensor_size;
 
         // check if overlap point is belongs to sensor rectangle
         if uv.x.abs() > 0.5 || uv.y.abs() > 0.5 {
             return None;
         }
 
-        // shift all vectors so hole will be at Z = 0
-        let pos = pos + DVec3::Z * self.focal_length;
-        let hole_overlap_position = pos - dir * (self.focal_length - factor);
+        let hole_overlap_position = sensor_overlap_position - dir / dir.z * self.focal_length;
         let hole_overlap_uv = (hole_overlap_position / self.hole_radius).xy();
 
         let dist_sq = hole_overlap_uv.length_squared();

@@ -2,7 +2,7 @@ use std::path::Path;
 
 use glam::DVec2;
 use image::{ImageBuffer, LumaA, RgbImage};
-use show_image::{create_window, ImageInfo, ImageView, WindowProxy};
+use show_image::{create_window, error::SetImageError, ImageInfo, ImageView, WindowProxy};
 
 use crate::{config::CONFIG, photons::wavelength::WaveLength};
 
@@ -61,14 +61,14 @@ impl Canvas {
         }
     }
 
-    pub fn show(&mut self) {
+    pub fn show(&mut self) -> Result<(), SetImageError> {
         let rgb_data = &self.generate_rgb();
         let rgb = ImageView::new(
             ImageInfo::rgb8(self.img.width(), self.img.height()),
             rgb_data,
         );
-        self.window
-            .set_image("frame-001", rgb)
-            .expect("image showed");
+        self.window.set_image("frame-001", rgb)?;
+
+        Ok(())
     }
 }

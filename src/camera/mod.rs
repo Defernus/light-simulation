@@ -1,4 +1,4 @@
-use glam::{DVec2, Vec3Swizzles};
+use glam::{DVec2, DVec3, Vec3Swizzles};
 
 use crate::photons::Photon;
 
@@ -7,7 +7,7 @@ use crate::photons::Photon;
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
     /// pow 2 of Camera's hole radius. The larger the hole, the more light will pass through, but the less sharp the image will be.
-    pub hole_radius_sq: f64,
+    pub hole_radius: f64,
 
     /// distance between camera's sensor and a hole
     pub focal_length: f64,
@@ -27,22 +27,22 @@ impl Camera {
             return None;
         }
 
-        let factor = pos.z / dir.z;
-        let overlap_position = pos + dir * factor;
+        let factor = -pos.z;
+        let sensor_overlap_position = pos + dir * factor;
 
-        let uv = overlap_position.xy() / self.sensor_size / 2.;
+        let uv = sensor_overlap_position.xy() / self.sensor_size / 2.;
 
         // check if overlap point is belongs to sensor rectangle
         if uv.x.abs() > 0.5 || uv.y.abs() > 0.5 {
             return None;
         }
 
-        let hole_overlap = overlap_position - dir * self.focal_length;
-        let hole_overlap_uv = hole_overlap.xy();
+        // shift all vectors so hole will be at Z = 0
+        let pos = pos + DVec3::Z * self.focal_length;
+        let hole_overlap_position = pos - dir * (self.focal_length - factor);
+        let hole_overlap_uv = (hole_overlap_position / self.hole_radius).xy();
 
-        let dist_sq = (hole_overlap_uv.x * hole_overlap_uv.x
-            + hole_overlap_uv.y * hole_overlap_uv.y)
-            / self.hole_radius_sq;
+        let dist_sq = hole_overlap_uv.length_squared();
         if dist_sq > 1. {
             return None;
         }

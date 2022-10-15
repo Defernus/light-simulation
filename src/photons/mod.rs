@@ -2,11 +2,13 @@ use glam::DVec3;
 
 use crate::config::CONFIG;
 
+use self::wavelength::WaveLength;
+
 pub mod wavelength;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Photon {
-    wavelength: wavelength::WaveLength,
+    wavelength: WaveLength,
     position: DVec3,
     direction: DVec3,
     ttl: usize,
@@ -21,6 +23,12 @@ impl Into<[u8; 3]> for Photon {
 impl Into<DVec3> for Photon {
     fn into(self) -> DVec3 {
         self.wavelength.into()
+    }
+}
+
+impl Into<WaveLength> for Photon {
+    fn into(self) -> WaveLength {
+        self.wavelength
     }
 }
 

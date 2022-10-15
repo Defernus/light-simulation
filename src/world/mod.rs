@@ -1,4 +1,7 @@
-use crate::{camera::Camera, canvas::Canvas, config::CONFIG, photons::Photon, star::Star};
+use crate::{
+    camera::Camera, canvas::Canvas, config::CONFIG, photons::Photon,
+    physics_constants::get_gravity_acceleration, star::Star,
+};
 use glam::DVec3;
 use rayon::prelude::*;
 use std::{
@@ -33,7 +36,7 @@ impl World {
         }
     }
 
-    pub fn process(&mut self, camera: Camera, canvas: &mut Canvas) {
+    pub fn update_light(&mut self, camera: Camera, canvas: &mut Canvas) {
         let total_photons_count = self
             .stars
             .iter()
@@ -67,5 +70,32 @@ impl World {
         if self.photon_groups.len() > CONFIG.photons_ttl {
             self.photon_groups.pop_front();
         }
+    }
+
+    pub fn update_movement(&mut self) {
+        self.stars = self
+            .stars
+            .iter()
+            .enumerate()
+            .map(|(i, star)| {
+                let mut a = DVec3::ZERO;
+
+                for (j, other_star) in self.stars.iter().enumerate() {
+                    if i == j {
+                        continue;
+                    }
+
+                    let delta = star.pos - other_star.pos;
+
+                    a += get_gravity_acceleration(other_star.mass, delta.length_squared());
+                }
+
+                Star {
+                    pos: star.pos + star.vel,
+                    vel: star.vel + a,
+                    ..*star
+                }
+            })
+            .collect();
     }
 }

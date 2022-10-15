@@ -7,8 +7,8 @@ use std::f64::consts::PI;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Star {
-    pub position: DVec3,
-    pub speed: DVec3,
+    pub pos: DVec3,
+    pub vel: DVec3,
     pub mass: f64,
     pub photons_wavelength: WaveLength,
 
@@ -29,7 +29,7 @@ impl Star {
 
             let direction = DVec3::new(theta.cos() * phi.cos(), phi.sin(), theta.sin() * phi.cos());
 
-            let photon = Photon::new(self.photons_wavelength, self.position, direction);
+            let photon = Photon::new(self.photons_wavelength, self.pos, direction);
 
             photons.push(photon);
         }
@@ -39,8 +39,8 @@ impl Star {
 impl Default for Star {
     fn default() -> Self {
         Self {
-            position: DVec3::ZERO,
-            speed: DVec3::ZERO,
+            pos: DVec3::ZERO,
+            vel: DVec3::ZERO,
             mass: 1.0,
             photons_wavelength: WaveLength::default(),
             luminosity: 1.0,

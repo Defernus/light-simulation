@@ -22,7 +22,8 @@ fn main() {
     let mut itt = 0;
     loop {
         let start_time = std::time::Instant::now();
-        world.process(camera, &mut canvas);
+        world.update_light(camera, &mut canvas);
+        world.update_movement();
 
         canvas.update_fading();
 

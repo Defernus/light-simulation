@@ -27,7 +27,7 @@ pub fn spawn_galaxy(
             + z * rand::random::<f64>() * thickness;
 
         let star = Star {
-            position: center + position,
+            pos: center + position,
             ..Default::default()
         };
         stars.push(star);

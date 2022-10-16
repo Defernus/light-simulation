@@ -1,10 +1,14 @@
 use crate::{
-    camera::Camera, canvas::Canvas, config::CONFIG, photons::Photon,
-    physics_constants::get_gravity_acceleration, star::Star,
+    camera::Camera, canvas::Canvas, config::CONFIG, physics_constants::get_gravity_acceleration,
+    star::Star,
 };
 use futures::executor::block_on;
 use glam::Vec3;
-use std::collections::LinkedList;
+use rayon::prelude::*;
+use std::{
+    collections::LinkedList,
+    sync::{Arc, Mutex},
+};
 
 use self::light_processing::LightProcessor;
 
@@ -13,9 +17,8 @@ mod spawn_galaxy;
 
 pub struct World {
     /// Represent all photons for each frame
-    photon_groups: LinkedList<Vec<Photon>>,
+    light_groups: LinkedList<LightProcessor>,
     stars: Vec<Star>,
-    light_processor: LightProcessor,
 }
 
 impl World {
@@ -39,8 +42,7 @@ impl World {
         });
 
         World {
-            light_processor: block_on(async { LightProcessor::new().await }),
-            photon_groups: LinkedList::new(),
+            light_groups: LinkedList::new(),
             stars,
         }
     }
@@ -58,19 +60,24 @@ impl World {
             star.spawn_photons(&mut frame_photons);
         });
 
-        self.photon_groups.push_back(frame_photons);
+        self.light_groups
+            .push_back(block_on(async { LightProcessor::new(frame_photons).await }));
 
-        self.photon_groups.iter_mut().for_each(|photons| {
-            block_on(async {
-                *photons = self
-                    .light_processor
-                    .process_light_for_group(camera, canvas, photons)
-                    .await;
+        let canvas = Arc::new(Mutex::new(canvas));
+
+        self.light_groups
+            .par_iter_mut()
+            .for_each(|light_processor| {
+                block_on(async {
+                    let canvas = canvas.clone();
+                    light_processor
+                        .process_light_for_group(camera, canvas)
+                        .await;
+                });
             });
-        });
 
-        if self.photon_groups.len() > CONFIG.photons_ttl {
-            self.photon_groups.pop_front();
+        if self.light_groups.len() > CONFIG.photons_ttl {
+            self.light_groups.pop_front();
         }
     }
 

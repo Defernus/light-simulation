@@ -1,6 +1,6 @@
 use crate::{
-    camera::Camera, canvas::Canvas, config::CONFIG, physics_constants::get_gravity_acceleration,
-    star::Star,
+    camera::Camera, canvas::Canvas, config::CONFIG, object::Object,
+    physics_constants::get_gravity_acceleration,
 };
 use futures::executor::block_on;
 use glam::Vec3;
@@ -18,7 +18,7 @@ mod spawn_galaxy;
 pub struct World {
     /// Represent all photons for each frame
     light_groups: LinkedList<LightProcessor>,
-    stars: Vec<Star>,
+    stars: Vec<Object>,
 }
 
 impl World {
@@ -36,7 +36,7 @@ impl World {
         //     (0.8, 2000.0),
         // );
 
-        stars.push(Star {
+        stars.push(Object {
             pos: Vec3::new(0., 0., -4.),
             ..Default::default()
         });
@@ -100,7 +100,7 @@ impl World {
                         * get_gravity_acceleration(other_star.mass, delta.length_squared());
                 }
 
-                Star {
+                Object {
                     pos: star.pos + star.vel,
                     vel: star.vel + a,
                     ..*star

@@ -6,7 +6,7 @@ use glam::Vec3;
 use std::f32::consts::PI;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Star {
+pub struct Object {
     pub pos: Vec3,
     pub vel: Vec3,
     pub mass: f32,
@@ -16,7 +16,7 @@ pub struct Star {
     pub luminosity: f32,
 }
 
-impl Star {
+impl Object {
     pub fn get_photons_per_frame(&self) -> usize {
         (self.luminosity * (CONFIG.photons_spawn_rate as f32)) as usize
     }
@@ -36,7 +36,7 @@ impl Star {
     }
 }
 
-impl Default for Star {
+impl Default for Object {
     fn default() -> Self {
         Self {
             pos: Vec3::ZERO,

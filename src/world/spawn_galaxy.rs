@@ -2,10 +2,10 @@ use std::f32::consts::PI;
 
 use glam::Vec3;
 
-use crate::{photons::wavelength::WaveLength, star::Star};
+use crate::{object::Object, photons::wavelength::WaveLength};
 
 pub fn spawn_galaxy(
-    stars: &mut Vec<Star>,
+    stars: &mut Vec<Object>,
     center: Vec3,
     top: Vec3,
     radius: f32,
@@ -29,7 +29,7 @@ pub fn spawn_galaxy(
             + y * r * angle.sin()
             + z * rand::random::<f32>() * thickness;
 
-        let star = Star {
+        let star = Object {
             pos: center + position,
             mass: rand::random::<f32>() * (mass_range.1 - mass_range.0) + mass_range.0,
             photons_wavelength: WaveLength(rand::random::<f32>() * 370.0 + 380.0),

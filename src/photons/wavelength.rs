@@ -1,12 +1,14 @@
+use bytemuck::{Pod, Zeroable};
 use colors_transform::{Color, Hsl};
 
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct WaveLength(pub f64);
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Pod, Zeroable)]
+pub struct WaveLength(pub f32);
 
 impl WaveLength {
     pub const WHITE: WaveLength = WaveLength(550.0);
 
-    pub fn new(value: f64) -> WaveLength {
+    pub fn new(value: f32) -> WaveLength {
         WaveLength(value)
     }
 }

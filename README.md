@@ -5,7 +5,8 @@
 ## Progress
 - [x] Camera obscura (center of the world, all object will be calculated relative to the camera).
 - [x] Light particles (photons) and light sources (stars).
-- [ ] Mass and gravity.
+- [x] Mass and gravity.
+- [ ] Gravity affects light
 - [ ] Black holes.
 - [ ] Use wgpu for calculation.
 - [x] realtime rendering.

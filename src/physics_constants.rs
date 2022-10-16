@@ -28,10 +28,11 @@ pub const GRAVITY_CONSTANT_SI: f64 = 6.67408e-11;
 /// A = G * m2 * MASS_SI / (r * r * DIST_SI_2) * TIME_SI * TIME_SI / DIST_SI  <br>
 /// A = m2 / (r * r) * (G * MASS_SI * TIME_SI_2 / DIST_SI_3  <br>
 ///
-pub const GRAVITY_CONSTANT_UNIT: f64 = GRAVITY_CONSTANT_SI * MASS_SI * TIME_SI_2 / DIST_SI_3;
+pub const GRAVITY_CONSTANT_UNIT: f32 =
+    (GRAVITY_CONSTANT_SI * MASS_SI * TIME_SI_2 / DIST_SI_3) as f32;
 
 /// calculate the gravitational acceleration towards a body of mass `other_mass`  <br>
 /// r_2 - distance squared
-pub fn get_gravity_acceleration(other_mass: f64, r_2: f64) -> f64 {
+pub fn get_gravity_acceleration(other_mass: f32, r_2: f32) -> f32 {
     other_mass / r_2 * GRAVITY_CONSTANT_UNIT
 }

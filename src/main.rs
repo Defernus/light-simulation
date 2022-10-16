@@ -1,4 +1,4 @@
-use glam::DVec2;
+use glam::Vec2;
 use light::{camera::Camera, canvas::Canvas, config::CONFIG, world::World};
 
 #[show_image::main]
@@ -15,7 +15,7 @@ fn main() {
     let camera = Camera {
         hole_radius: CONFIG.camera_hole_size,
         focal_length: 1.0,
-        sensor_size: DVec2::new(2.0, 2.0),
+        sensor_size: Vec2::new(2.0, 2.0),
     };
     let mut canvas = Canvas::new(width, height);
 
@@ -28,7 +28,7 @@ fn main() {
         canvas.update_fading();
 
         if itt % 10 == 0 {
-            canvas.save(format!("{}/step-{}.png", CONFIG.out_dir, itt));
+            canvas.save(format!("{}/{:0>8}-frame.png", CONFIG.out_dir, itt));
         }
 
         if let Err(e) = canvas.show() {

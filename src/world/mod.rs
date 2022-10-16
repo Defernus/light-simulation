@@ -2,37 +2,44 @@ use crate::{
     camera::Camera, canvas::Canvas, config::CONFIG, photons::Photon,
     physics_constants::get_gravity_acceleration, star::Star,
 };
-use glam::DVec3;
-use rayon::prelude::*;
-use std::{
-    collections::LinkedList,
-    sync::{Arc, Mutex},
-};
+use futures::executor::block_on;
+use glam::Vec3;
+use std::collections::LinkedList;
 
-pub mod spawn_galaxy;
+use self::light_processing::LightProcessor;
+
+mod light_processing;
+mod spawn_galaxy;
 
 pub struct World {
     /// Represent all photons for each frame
     photon_groups: LinkedList<Vec<Photon>>,
     stars: Vec<Star>,
+    light_processor: LightProcessor,
 }
 
 impl World {
     pub fn new() -> World {
         let mut stars = vec![];
 
-        spawn_galaxy::spawn_galaxy(
-            &mut stars,
-            DVec3::new(0., 0., -4.),
-            // DVec3::new(1.0, 3.0, 2.0),
-            DVec3::Z,
-            0.1,
-            0.01,
-            1000,
-            (0.8, 8.0),
-        );
+        // spawn_galaxy::spawn_galaxy(
+        //     &mut stars,
+        //     Vec3::new(0., 0., -4.),
+        //     // Vec3::new(1.0, 3.0, 2.0),
+        //     Vec3::Z,
+        //     1.0,
+        //     0.01,
+        //     100,
+        //     (0.8, 2000.0),
+        // );
+
+        stars.push(Star {
+            pos: Vec3::new(0., 0., -4.),
+            ..Default::default()
+        });
 
         World {
+            light_processor: block_on(async { LightProcessor::new().await }),
             photon_groups: LinkedList::new(),
             stars,
         }
@@ -53,20 +60,13 @@ impl World {
 
         self.photon_groups.push_back(frame_photons);
 
-        let canvas = Arc::new(Mutex::new(canvas));
-
-        self.photon_groups.par_iter_mut().for_each(|photons| {
-            let canvas = canvas.clone();
-
-            for photon in photons.iter_mut() {
-                if let Some((uv, factor)) = camera.get_intersection(*photon) {
-                    let mut canvas = canvas.lock().unwrap();
-                    canvas.update_pixel_by_uv(1. - uv, photon.get_wavelength(), 1.0 - factor);
-                    continue;
-                }
-
-                photon.process();
-            }
+        self.photon_groups.iter_mut().for_each(|photons| {
+            block_on(async {
+                *photons = self
+                    .light_processor
+                    .process_light_for_group(camera, canvas, photons)
+                    .await;
+            });
         });
 
         if self.photon_groups.len() > CONFIG.photons_ttl {
@@ -80,7 +80,7 @@ impl World {
             .iter()
             .enumerate()
             .map(|(i, star)| {
-                let mut a = DVec3::ZERO;
+                let mut a = Vec3::ZERO;
 
                 for (j, other_star) in self.stars.iter().enumerate() {
                     if i == j {

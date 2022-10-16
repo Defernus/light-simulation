@@ -1,4 +1,4 @@
-use glam::{DVec2, Vec3Swizzles};
+use glam::{Vec2, Vec3Swizzles};
 
 use crate::photons::Photon;
 
@@ -7,19 +7,19 @@ use crate::photons::Photon;
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
     /// pow 2 of Camera's hole radius. The larger the hole, the more light will pass through, but the less sharp the image will be.
-    pub hole_radius: f64,
+    pub hole_radius: f32,
 
     /// distance between camera's sensor and a hole
-    pub focal_length: f64,
+    pub focal_length: f32,
 
     /// Size of the sensor rectangle.
-    pub sensor_size: DVec2,
+    pub sensor_size: Vec2,
 }
 
 impl Camera {
     /// Return intersection between camera's sensor and a ray segment (if no intersection - return None) and accuracy (squared distance between center of the hole and hole intersection point).
     /// The segment must belong to a straight line passing through hole (if it is not - return None).  
-    pub fn get_intersection(&self, photon: Photon) -> Option<(DVec2, f64)> {
+    pub fn get_intersection(&self, photon: Photon) -> Option<(Vec2, f32)> {
         let pos = photon.get_position();
         let dir = photon.get_direction().normalize();
 

@@ -1,6 +1,8 @@
 /// speed of photons
 pub const C_SI: f64 = 299792458.0;
 
+pub const TIME_SPEED: f32 = 1.0;
+
 /// time between each frame in seconds
 pub const TIME_SI: f64 = 365. * 24. * 60. * 60.;
 const TIME_SI_2: f64 = TIME_SI * TIME_SI;

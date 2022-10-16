@@ -1,6 +1,9 @@
 use crate::{
-    camera::Camera, canvas::Canvas, config::CONFIG, object::Object,
-    physics_constants::get_gravity_acceleration,
+    camera::Camera,
+    canvas::Canvas,
+    config::CONFIG,
+    object::Object,
+    physics_constants::{get_gravity_acceleration, TIME_SPEED},
 };
 use futures::executor::block_on;
 use glam::Vec3;
@@ -25,21 +28,21 @@ impl World {
     pub fn new() -> World {
         let mut stars = vec![];
 
-        // spawn_galaxy::spawn_galaxy(
-        //     &mut stars,
-        //     Vec3::new(0., 0., -4.),
-        //     // Vec3::new(1.0, 3.0, 2.0),
-        //     Vec3::Z,
-        //     1.0,
-        //     0.01,
-        //     100,
-        //     (0.8, 2000.0),
-        // );
+        spawn_galaxy::spawn_galaxy(
+            &mut stars,
+            Vec3::new(0., 0., -4.),
+            // Vec3::new(1.0, 3.0, 2.0),
+            Vec3::Z,
+            0.2,
+            0.01,
+            1000,
+            (0.8, 2000.0),
+        );
 
-        stars.push(Object {
-            pos: Vec3::new(0., 0., -4.),
-            ..Default::default()
-        });
+        // stars.push(Object {
+        //     pos: Vec3::new(0., 0., -4.),
+        //     ..Default::default()
+        // });
 
         World {
             light_groups: LinkedList::new(),
@@ -101,7 +104,7 @@ impl World {
                 }
 
                 Object {
-                    pos: star.pos + star.vel,
+                    pos: star.pos + star.vel * TIME_SPEED,
                     vel: star.vel + a,
                     ..*star
                 }

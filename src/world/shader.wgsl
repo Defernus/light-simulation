@@ -1,6 +1,7 @@
 struct Params {
     size: u32,
     amount: u32,
+    time_speed: f32,
 };
 
 struct Photon {
@@ -19,7 +20,7 @@ var<storage, read_write> v_indices: array<Photon>; // this is used as both input
 
 fn process(photon: Photon) -> Photon {
     return Photon (
-        photon.pos + photon.dir,
+        photon.pos + photon.dir * params.time_speed,
         photon.dir,
         photon.wavelength,
     );

@@ -1,4 +1,4 @@
-use crate::{camera::Camera, canvas::Canvas, photons::Photon};
+use crate::{camera::Camera, canvas::Canvas, photons::Photon, physics_constants::TIME_SPEED};
 use bytemuck::{Pod, Zeroable};
 use std::{
     borrow::Cow,
@@ -14,7 +14,6 @@ pub struct LightProcessor {
     photons_group_size: wgpu::BufferAddress,
     size_sq: u32,
 
-    params_buffer: wgpu::Buffer,
     staging_buffer: wgpu::Buffer,
     photons_buffer: wgpu::Buffer,
 
@@ -27,8 +26,9 @@ pub struct LightProcessor {
 struct Params {
     size: u32,
     amount: u32,
+    time_speed: f32,
 
-    _pad: [u32; 10],
+    _pad: [u32; 9],
 }
 
 impl LightProcessor {
@@ -74,6 +74,7 @@ impl LightProcessor {
             contents: bytemuck::cast_slice(&[Params {
                 amount: photons.len() as u32,
                 size: size_sq as u32,
+                time_speed: TIME_SPEED,
                 ..Default::default()
             }]),
             usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
@@ -115,7 +116,6 @@ impl LightProcessor {
             queue,
             photons_group_size: size,
             size_sq,
-            params_buffer,
             photons_buffer,
             staging_buffer,
             bind_group,

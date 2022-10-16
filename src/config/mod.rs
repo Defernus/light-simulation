@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 #[derive(Envconfig)]
 pub struct Config {
     /// Defines the number of photons that will be spawned from each star.
-    #[envconfig(from = "PHOTONS_SPAWN_RATE", default = "1000000")]
+    #[envconfig(from = "PHOTONS_SPAWN_RATE", default = "1000")]
     pub photons_spawn_rate: usize,
 
     #[envconfig(from = "out_dir", default = "out")]

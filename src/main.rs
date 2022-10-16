@@ -36,7 +36,7 @@ fn main() {
             return;
         }
 
-        log::info!("Iteration {}; Time: {:?}", itt, start_time.elapsed());
+        println!("Iteration {}; Time: {:?}", itt, start_time.elapsed());
         itt += 1;
     }
 }

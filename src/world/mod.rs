@@ -87,9 +87,10 @@ impl World {
                         continue;
                     }
 
-                    let delta = star.pos - other_star.pos;
+                    let delta = other_star.pos - star.pos;
 
-                    a += get_gravity_acceleration(other_star.mass, delta.length_squared());
+                    a += delta.normalize()
+                        * get_gravity_acceleration(other_star.mass, delta.length_squared());
                 }
 
                 Star {

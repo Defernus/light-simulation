@@ -22,12 +22,20 @@ impl Canvas {
     }
 
     pub fn update_pixel(&mut self, x: u32, y: u32, wave_length: WaveLength, luminosity: f64) {
-        let val = &mut self.img.get_pixel_mut(x, y).0;
+        if x >= self.img.width() || y >= self.img.height() {
+            return;
+        }
+
+        let val = &mut self.img.get_pixel_mut(x, self.img.height() - y - 1).0;
         val[0] = (val[0] * val[1] + wave_length.0 * luminosity) / (val[1] + luminosity);
         val[1] += luminosity;
     }
 
     pub fn update_pixel_by_uv(&mut self, uv: DVec2, wave_length: WaveLength, luminosity: f64) {
+        if uv.x < 0.0 || uv.x >= 1.0 || uv.y < 0.0 || uv.y >= 1.0 {
+            return;
+        }
+
         let x = (uv.x * self.img.width() as f64) as u32;
         let y = (uv.y * self.img.height() as f64) as u32;
         self.update_pixel(x, y, wave_length, luminosity);
@@ -37,9 +45,12 @@ impl Canvas {
         let mut rgb_img = RgbImage::new(self.img.width(), self.img.height());
 
         for (x, y, pixel) in self.img.enumerate_pixels() {
-            // !TODO add color from wave length
-            let color = (pixel.0[1] * 255.0) as u8;
-            rgb_img.put_pixel(x, y, image::Rgb([color, color, color]));
+            let mut rgb_pixel = image::Rgb(WaveLength(pixel.0[0]).into());
+            rgb_pixel.0[0] = (rgb_pixel.0[0] as f64 * pixel.0[1]) as u8;
+            rgb_pixel.0[1] = (rgb_pixel.0[1] as f64 * pixel.0[1]) as u8;
+            rgb_pixel.0[2] = (rgb_pixel.0[2] as f64 * pixel.0[1]) as u8;
+
+            rgb_img.put_pixel(x, y, rgb_pixel);
         }
 
         rgb_img

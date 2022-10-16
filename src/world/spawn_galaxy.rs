@@ -1,6 +1,6 @@
 use glam::DVec3;
 
-use crate::star::Star;
+use crate::{photons::wavelength::WaveLength, star::Star};
 
 pub fn spawn_galaxy(
     stars: &mut Vec<Star>,
@@ -30,6 +30,7 @@ pub fn spawn_galaxy(
         let star = Star {
             pos: center + position,
             mass: rand::random::<f64>() * (mass_range.1 - mass_range.0) + mass_range.0,
+            photons_wavelength: WaveLength(rand::random::<f64>() * 370.0 + 380.0),
             ..Default::default()
         };
         stars.push(star);
